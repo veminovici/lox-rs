@@ -12,7 +12,7 @@ pub struct Column(pub usize);
 #[derive(Clone, Copy, PartialEq)]
 pub struct Span {
     start_line: Line,
-    start_col: Column,
+    pub(crate) start_col: Column,
     end_line: Line,
     end_col: Column,
 }
@@ -23,7 +23,7 @@ impl Default for Span {
             start_line: Line(1),
             start_col: Column(0),
             end_line: Line(1),
-            end_col: Column(1),
+            end_col: Column(0),
         }
     }
 }
@@ -91,8 +91,9 @@ impl Span {
         let s = *self;
 
         self.start_line = self.end_line;
-        self.start_col = self.end_col;
-        self.end_col = Column(self.start_col.0 + 1);
+        let e = self.end_col;
+        self.start_col = e;
+        self.end_col = e;
 
         s
     }
@@ -107,9 +108,7 @@ impl Span {
 
 impl Debug for Span {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if self.is_one_char() {
-            write!(f, "{}:{}", self.start_line.0, self.start_col.0)
-        } else if self.is_one_line() {
+        if self.is_one_line() {
             write!(
                 f,
                 "{}:{}-{}",
@@ -197,10 +196,9 @@ mod tests {
         assert_eq!(10, s1.end_line.0);
         assert_eq!(101, s1.end_col.0);
 
-        assert!(s.is_one_char());
         assert_eq!(10, s.start_line.0);
         assert_eq!(101, s.start_col.0);
         assert_eq!(10, s.end_line.0);
-        assert_eq!(102, s.end_col.0);
+        assert_eq!(101, s.end_col.0);
     }
 }

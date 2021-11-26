@@ -10,7 +10,7 @@ pub struct Token {
 }
 
 impl Token {
-    fn new(l: Lexeme, s: Span) -> Self {
+    pub(crate) fn new(l: Lexeme, s: Span) -> Self {
         Token { lexeme: l, span: s }
     }
 
