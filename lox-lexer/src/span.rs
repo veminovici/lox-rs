@@ -96,6 +96,13 @@ impl Span {
 
         s
     }
+
+    /// Checks if the span is an one-line and with a given length
+    pub(crate) fn check_span_len(&self, n: usize) {
+        assert!(self.is_one_line());
+        let len = self.end_col.0 - self.start_col.0;
+        assert_eq!(n, len)
+    }
 }
 
 impl Debug for Span {

@@ -78,17 +78,22 @@ mod tests {
     #[test]
     fn test_read_char() {
         let mut ctx = Context::new("abc");
+        ctx.span.check_span_len(1);
 
         let a = ctx.read_char().unwrap();
         assert_eq!('a', a);
+        ctx.span.check_span_len(2);
 
         let b = ctx.read_char().unwrap();
         assert_eq!('b', b);
+        ctx.span.check_span_len(3);
 
         let c = ctx.read_char().unwrap();
         assert_eq!('c', c);
+        ctx.span.check_span_len(4);
 
         let e = ctx.read_char();
+        ctx.span.check_span_len(4);
         assert!(e.is_none());
     }
 
