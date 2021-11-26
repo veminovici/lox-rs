@@ -68,6 +68,18 @@ impl Span {
         !self.is_one_line()
     }
 
+    /// Returns true if the span represents a new line
+    #[inline]
+    pub fn is_newline(&self) -> bool {
+        self.end_col.0 == 0 && self.end_line.0 - self.start_line.0 == 1
+    }
+
+    /// Returns true if the span represents an EOF
+    #[inline]
+    pub fn is_eof(&self) -> bool {
+        self.end_col.0 == self.start_col.0
+    }
+
     /// Increments the coumn of a span
     #[inline]
     pub fn incr_col_n(&mut self, n: usize) {

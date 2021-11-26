@@ -292,12 +292,14 @@ impl Token {
     /// Creates a new 'new_line' token.
     #[inline]
     pub fn new_newline(s: Span) -> Self {
+        debug_assert!(s.is_newline());
         Self::new(Lexeme::NewLine, s)
     }
 
     /// Creates a new 'eof' token.
     #[inline]
     pub fn new_eof(s: Span) -> Self {
+        debug_assert!(s.is_eof());
         Self::new(Lexeme::Eof, s)
     }
 }
@@ -682,7 +684,8 @@ mod tests {
 
     #[test]
     fn test_new_newline() {
-        let s = Span::new(Line(10), Column(100));
+        let mut s = Span::new(Line(10), Column(100));
+        s.incr_line();
 
         let t = Token::new_newline(s);
         assert_eq!(Lexeme::NewLine, t.lexeme);
@@ -691,7 +694,8 @@ mod tests {
 
     #[test]
     fn test_new_eof() {
-        let s = Span::new(Line(10), Column(100));
+        let mut s = Span::new(Line(10), Column(100));
+        let _ = s.complete();
 
         let t = Token::new_eof(s);
         assert_eq!(Lexeme::Eof, t.lexeme);
