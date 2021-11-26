@@ -16,14 +16,14 @@ impl Token {
 
     /// Creates a new 'left parenthesis' token
     #[inline]
-    pub fn new_left_paren(s: Span) -> Self {
+    pub fn new_left_parenthesis(s: Span) -> Self {
         debug_assert!(s.is_one_char());
         Self::new(Lexeme::LeftParen, s)
     }
 
     /// Creates a new 'right parenthesis' token
     #[inline]
-    pub fn new_right_paren(s: Span) -> Self {
+    pub fn new_right_parenthesis(s: Span) -> Self {
         debug_assert!(s.is_one_char());
         Self::new(Lexeme::RightParen, s)
     }
@@ -328,7 +328,7 @@ mod tests {
     #[test]
     fn test_new_left_paren() {
         let s = Span::new(Line(10), Column(100));
-        let t = Token::new_left_paren(s);
+        let t = Token::new_left_parenthesis(s);
         assert_eq!(Lexeme::LeftParen, t.lexeme);
         assert_eq!(s, t.span);
     }
@@ -336,7 +336,7 @@ mod tests {
     #[test]
     fn test_new_right_paren() {
         let s = Span::new(Line(10), Column(100));
-        let t = Token::new_right_paren(s);
+        let t = Token::new_right_parenthesis(s);
         assert_eq!(Lexeme::RightParen, t.lexeme);
         assert_eq!(s, t.span);
     }

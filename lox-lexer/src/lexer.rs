@@ -5,6 +5,17 @@ use crate::{Span, Token};
 
 const CHAR_NEWLINE: char = '\n';
 
+const CHAR_LEFT_PAREN: char = '(';
+const CHAR_RIGHT_PAREN: char = ')';
+const CHAR_LEFT_BRACE: char = '{';
+const CHAR_RIGHT_BRACE: char = '}';
+const CHAR_COMMA: char = ',';
+const CHAR_DOT: char = '.';
+const CHAR_PLUS: char = '+';
+const CHAR_MINUS: char = '-';
+const CHAR_SEMICOLON: char = ';';
+const CHAR_STAR: char = '*';
+
 struct Context<'a> {
     source: Peekable<Chars<'a>>, // the source of characters
     span: Span,                  // the active span
@@ -54,7 +65,129 @@ impl<'a> Context<'a> {
     }
 
     fn read_token_with_char(&mut self, c: char) -> Option<Token> {
-        None
+        match c {
+            CHAR_LEFT_PAREN => self.mk_left_parenthesis_token(),
+            CHAR_RIGHT_PAREN => self.mk_right_parenthesis_token(),
+            CHAR_LEFT_BRACE => self.mk_left_brace_token(),
+            CHAR_RIGHT_BRACE => self.mk_right_brace_token(),
+            CHAR_COMMA => self.mk_comma_token(),
+            CHAR_DOT => self.mk_dot_token(),
+            CHAR_PLUS => self.mk_plus_token(),
+            CHAR_MINUS => self.mk_minus_token(),
+            CHAR_SEMICOLON => self.mk_semicolon_token(),
+            CHAR_STAR => self.mk_star_token(),
+            _ => None,
+        }
+    }
+
+    /// Creates a 'left parenthesis' token.
+    fn mk_left_parenthesis_token(&mut self) -> Option<Token> {
+        debug_assert!(!self.eof_generated);
+        debug_assert!(self.span.is_one_char());
+
+        let s = self.span.complete();
+        let t = Token::new_left_parenthesis(s);
+
+        Some(t)
+    }
+
+    /// Creates a 'right parenthesis' token.
+    fn mk_right_parenthesis_token(&mut self) -> Option<Token> {
+        debug_assert!(!self.eof_generated);
+        debug_assert!(self.span.is_one_char());
+
+        let s = self.span.complete();
+        let t = Token::new_right_parenthesis(s);
+
+        Some(t)
+    }
+
+    /// Creates a 'left brace' token.
+    fn mk_left_brace_token(&mut self) -> Option<Token> {
+        debug_assert!(!self.eof_generated);
+        debug_assert!(self.span.is_one_char());
+
+        let s = self.span.complete();
+        let t = Token::new_left_brace(s);
+
+        Some(t)
+    }
+
+    /// Creates a 'right brace' token.
+    fn mk_right_brace_token(&mut self) -> Option<Token> {
+        debug_assert!(!self.eof_generated);
+        debug_assert!(self.span.is_one_char());
+
+        let s = self.span.complete();
+        let t = Token::new_right_brace(s);
+
+        Some(t)
+    }
+
+    /// Creates a 'comma' token.
+    fn mk_comma_token(&mut self) -> Option<Token> {
+        debug_assert!(!self.eof_generated);
+        debug_assert!(self.span.is_one_char());
+
+        let s = self.span.complete();
+        let t = Token::new_comma(s);
+
+        Some(t)
+    }
+
+    /// Creates a 'dot' token.
+    fn mk_dot_token(&mut self) -> Option<Token> {
+        debug_assert!(!self.eof_generated);
+        debug_assert!(self.span.is_one_char());
+
+        let s = self.span.complete();
+        let t = Token::new_dot(s);
+
+        Some(t)
+    }
+
+    /// Creates a 'plus' token.
+    fn mk_plus_token(&mut self) -> Option<Token> {
+        debug_assert!(!self.eof_generated);
+        debug_assert!(self.span.is_one_char());
+
+        let s = self.span.complete();
+        let t = Token::new_plus(s);
+
+        Some(t)
+    }
+
+    /// Creates a 'minus' token.
+    fn mk_minus_token(&mut self) -> Option<Token> {
+        debug_assert!(!self.eof_generated);
+        debug_assert!(self.span.is_one_char());
+
+        let s = self.span.complete();
+        let t = Token::new_minus(s);
+
+        Some(t)
+    }
+
+    /// Creates a 'semicolon' token.
+    fn mk_semicolon_token(&mut self) -> Option<Token> {
+        debug_assert!(!self.eof_generated);
+        debug_assert!(self.span.is_one_char());
+
+        let s = self.span.complete();
+        let t = Token::new_semicolon(s);
+
+        Some(t)
+    }
+
+    /// Creates a 'star' token.
+    fn mk_star_token(&mut self) -> Option<Token> {
+        debug_assert!(!self.eof_generated);
+        debug_assert!(self.span.is_one_char());
+
+        let s = self.span.complete();
+        let t = Token::new_star(s);
+
+        Some(t)
     }
 
     /// Creates a new 'eof' token while updating the context
@@ -62,8 +195,8 @@ impl<'a> Context<'a> {
         debug_assert!(!self.eof_generated);
 
         self.eof_generated = true; // mark that we reaced the end of stream
-        let s1 = self.span.complete(); // complete the span
-        let t = Token::new_eof(s1); // create a new token
+        let s = self.span.complete(); // complete the span
+        let t = Token::new_eof(s); // create a new token
 
         Some(t)
     }
@@ -98,12 +231,111 @@ mod tests {
     }
 
     #[test]
+    fn test_mk_left_parenthesis() {
+        let mut ctx = Context::new("abc");
+        let tkn = ctx.mk_left_parenthesis_token().unwrap();
+
+        assert!(!ctx.eof_generated);
+        assert!(tkn.span.is_one_char());
+        assert_eq!(Lexeme::LeftParen, tkn.lexeme);
+    }
+
+    #[test]
+    fn test_mk_right_parenthesis() {
+        let mut ctx = Context::new("abc");
+        let tkn = ctx.mk_right_parenthesis_token().unwrap();
+
+        assert!(!ctx.eof_generated);
+        assert!(tkn.span.is_one_char());
+        assert_eq!(Lexeme::RightParen, tkn.lexeme);
+    }
+
+    #[test]
+    fn test_mk_left_brace() {
+        let mut ctx = Context::new("abc");
+        let tkn = ctx.mk_left_brace_token().unwrap();
+
+        assert!(!ctx.eof_generated);
+        assert!(tkn.span.is_one_char());
+        assert_eq!(Lexeme::LeftBrace, tkn.lexeme);
+    }
+
+    #[test]
+    fn test_mk_right_brace() {
+        let mut ctx = Context::new("abc");
+        let tkn = ctx.mk_right_brace_token().unwrap();
+
+        assert!(!ctx.eof_generated);
+        assert!(tkn.span.is_one_char());
+        assert_eq!(Lexeme::RightBrace, tkn.lexeme);
+    }
+
+    #[test]
+    fn test_mk_comma() {
+        let mut ctx = Context::new("abc");
+        let tkn = ctx.mk_comma_token().unwrap();
+
+        assert!(!ctx.eof_generated);
+        assert!(tkn.span.is_one_char());
+        assert_eq!(Lexeme::Comma, tkn.lexeme);
+    }
+
+    #[test]
+    fn test_mk_dot() {
+        let mut ctx = Context::new("abc");
+        let tkn = ctx.mk_dot_token().unwrap();
+
+        assert!(!ctx.eof_generated);
+        assert!(tkn.span.is_one_char());
+        assert_eq!(Lexeme::Dot, tkn.lexeme);
+    }
+
+    #[test]
+    fn test_mk_plus() {
+        let mut ctx = Context::new("abc");
+        let tkn = ctx.mk_plus_token().unwrap();
+
+        assert!(!ctx.eof_generated);
+        assert!(tkn.span.is_one_char());
+        assert_eq!(Lexeme::Plus, tkn.lexeme);
+    }
+
+    #[test]
+    fn test_mk_minus() {
+        let mut ctx = Context::new("abc");
+        let tkn = ctx.mk_minus_token().unwrap();
+
+        assert!(!ctx.eof_generated);
+        assert!(tkn.span.is_one_char());
+        assert_eq!(Lexeme::Minus, tkn.lexeme);
+    }
+
+    #[test]
+    fn test_mk_semicolon() {
+        let mut ctx = Context::new("abc");
+        let tkn = ctx.mk_semicolon_token().unwrap();
+
+        assert!(!ctx.eof_generated);
+        assert!(tkn.span.is_one_char());
+        assert_eq!(Lexeme::Semicolon, tkn.lexeme);
+    }
+
+    #[test]
+    fn test_mk_star() {
+        let mut ctx = Context::new("abc");
+        let tkn = ctx.mk_star_token().unwrap();
+
+        assert!(!ctx.eof_generated);
+        assert!(tkn.span.is_one_char());
+        assert_eq!(Lexeme::Star, tkn.lexeme);
+    }
+
+    #[test]
     fn test_mk_eof_token() {
         let mut ctx = Context::new("abc");
         let tkn = ctx.mk_eof_token().unwrap();
 
         assert!(ctx.eof_generated);
-
         assert!(tkn.span.is_one_char());
         assert_eq!(Lexeme::Eof, tkn.lexeme);
     }
