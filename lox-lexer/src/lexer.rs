@@ -68,3 +68,38 @@ impl<'a> Context<'a> {
         Some(t)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::Lexeme;
+
+    use super::*;
+
+    #[test]
+    fn test_read_char() {
+        let mut ctx = Context::new("abc");
+
+        let a = ctx.read_char().unwrap();
+        assert_eq!('a', a);
+
+        let b = ctx.read_char().unwrap();
+        assert_eq!('b', b);
+
+        let c = ctx.read_char().unwrap();
+        assert_eq!('c', c);
+
+        let e = ctx.read_char();
+        assert!(e.is_none());
+    }
+
+    #[test]
+    fn test_mk_eof_token() {
+        let mut ctx = Context::new("abc");
+        let tkn = ctx.mk_eof_token().unwrap();
+
+        assert!(ctx.eof_generated);
+
+        assert!(tkn.span.is_one_char());
+        assert_eq!(Lexeme::Eof, tkn.lexeme);
+    }
+}
