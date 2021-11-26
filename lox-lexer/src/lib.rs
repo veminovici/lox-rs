@@ -1,7 +1,8 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+//! A crate for nyxx lexer
+//!
+#![deny(missing_docs)]
+#![deny(unreachable_code)]
+
+mod span;
+
+pub use crate::span::*;
