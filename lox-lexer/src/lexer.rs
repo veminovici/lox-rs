@@ -73,7 +73,7 @@ impl<'a> Context<'a> {
 
     /// Reads a new token from the source. the source is wrapped into a
     /// contenxt, which also can provide the span of the token.
-    pub(crate) fn read(&mut self) -> Option<Token> {
+    pub(crate) fn read_token(&mut self) -> Option<Token> {
         if self.eof_generated {
             None
         } else if let Some(c) = self.read_char() {
@@ -645,11 +645,66 @@ impl<'a> Context<'a> {
     }
 }
 
+//
+// Lexer iterator
+//
+
+/// An iterator for collection of tokens generated
+/// during the parsing of a source string. See [Lexer] for more details.
+pub struct LexerIter<'a> {
+    ctx: Context<'a>,
+}
+
+impl<'a> Iterator for LexerIter<'a> {
+    type Item = Token;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.ctx.read_token()
+    }
+}
+
+//
+// Lexer
+//
+
+/// The lexer for a source string
+pub struct Lexer {}
+
+impl Lexer {
+    /// Returns an iterator which containts the
+    /// tokens resulted from parsing the source string.
+    #[inline]
+    pub fn with_source(source: &str) -> LexerIter {
+        Lexer::iter(source)
+    }
+
+    /// Returns an iterator which containts the
+    /// tokens resulted from parsing the source string.
+    pub fn iter(source: &str) -> LexerIter {
+        LexerIter {
+            ctx: Context::new(source),
+        }
+    }
+}
+
+impl<'a> From<&'a str> for LexerIter<'a> {
+    fn from(source: &'a str) -> Self {
+        Lexer::iter(source)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::Lexeme;
 
     use super::*;
+
+    // /// Checks if the span is an one-line and with a given length
+    fn check_span_len(ctx: &mut Context, n: usize) {
+        assert!(ctx.span.is_one_line());
+        let len = ctx.span.end_col.0 - ctx.span.start_col.0;
+        assert_eq!(n, len)
+    }
 
     fn read_and_ignore(ctx: &mut Context) {
         let _ = ctx.read_char().unwrap();
@@ -659,22 +714,22 @@ mod tests {
     #[test]
     fn test_read_char() {
         let mut ctx = Context::new("abc");
-        ctx.span.check_span_len(0);
+        check_span_len(&mut ctx, 0);
 
         let a = ctx.read_char().unwrap();
         assert_eq!('a', a);
-        ctx.span.check_span_len(1);
+        check_span_len(&mut ctx, 1);
 
         let b = ctx.read_char().unwrap();
         assert_eq!('b', b);
-        ctx.span.check_span_len(2);
+        check_span_len(&mut ctx, 2);
 
         let c = ctx.read_char().unwrap();
         assert_eq!('c', c);
-        ctx.span.check_span_len(3);
+        check_span_len(&mut ctx, 3);
 
         let e = ctx.read_char();
-        ctx.span.check_span_len(3);
+        check_span_len(&mut ctx, 3);
         assert!(e.is_none());
     }
 

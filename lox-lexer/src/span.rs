@@ -14,7 +14,7 @@ pub struct Span {
     start_line: Line,
     pub(crate) start_col: Column,
     end_line: Line,
-    end_col: Column,
+    pub(crate) end_col: Column,
 }
 
 impl Default for Span {
@@ -96,13 +96,6 @@ impl Span {
         self.end_col = e;
 
         s
-    }
-
-    /// Checks if the span is an one-line and with a given length
-    pub(crate) fn check_span_len(&self, n: usize) {
-        assert!(self.is_one_line());
-        let len = self.end_col.0 - self.start_col.0;
-        assert_eq!(n, len)
     }
 }
 
