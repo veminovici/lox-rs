@@ -4,7 +4,7 @@ A collection of rust crates for an interpreter.
 </br>
 
 ![GitHub top language](https://img.shields.io/github/languages/top/veminovici/lox-rs)
-[![CI Pipeline](https://github.com/veminovici/lox-rs/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/veminovici/lox-rs/actions/workflows/ci.yml)
+[![CI Pipeline](https://github.com/veminovici/lox-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/veminovici/lox-rs/actions/workflows/ci.yml)
 [![Last commit](https://img.shields.io/github/last-commit/veminovici/lox-rs)](https://github.com/veminovici/lox-rs)
 [![Repo size](https://img.shields.io/github/repo-size/veminovici/lox-rs)](https://github.com/veminovici/lox-rs)
 [![GitHub issues](https://img.shields.io/github/issues/veminovici/lox-rs)](https://github.com/veminovici/lox-rs/issues)
