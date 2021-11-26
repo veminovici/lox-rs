@@ -668,6 +668,16 @@ impl<'a> Iterator for LexerIter<'a> {
 //
 
 /// The lexer for a source string
+///
+/// # Example
+///
+/// ```
+/// use lox_lexer::Lexer;
+///
+/// let source = "var language=\n\"lox\";";
+/// Lexer::with_source(source).for_each(|c| println!("{:?}", c));
+/// ```
+
 pub struct Lexer {}
 
 impl Lexer {
@@ -1558,5 +1568,12 @@ mod tests {
 
         // Read the _ character
         read_and_ignore(&mut ctx);
+    }
+
+    #[test]
+    fn test_iter() {
+        let source = "var x = \"test\"";
+        let lxr = Lexer::with_source(source);
+        lxr.into_iter().for_each(|tkn| println!("{:?}", tkn));
     }
 }
