@@ -9,6 +9,7 @@ pub struct Line(usize);
 pub struct Column(usize);
 
 /// The position in the stream
+#[derive(Clone, Copy)]
 pub struct Span {
     start_line: Line,
     start_col: Column,
@@ -23,7 +24,7 @@ impl Span {
             start_line: l,
             start_col: c,
             end_line: l,
-            end_col: c,
+            end_col: Column(c.0 + 1),
         }
     }
 
@@ -36,7 +37,7 @@ impl Span {
     /// Returns true if the span is one-char one.
     #[inline]
     pub fn is_one_char(&self) -> bool {
-        self.is_one_line() && self.start_col.0 == self.end_col.0
+        self.is_one_line() && self.start_col.0 + 1 == self.end_col.0
     }
 
     /// Returns true if the span is a multi-line one.
@@ -54,6 +55,17 @@ impl Span {
     pub fn incr_line(&mut self) {
         self.end_line = Line(self.end_line.0 + 1);
         self.end_col = Column(0);
+    }
+
+    /// Completes a span and starts a new one.
+    pub fn complete(&mut self) -> Self {
+        let s = *self;
+
+        self.start_line = self.end_line;
+        self.start_col = self.end_col;
+        self.end_col = Column(self.start_col.0 + 1);
+
+        s
     }
 }
 
@@ -87,7 +99,7 @@ mod test {
         assert_eq!(10, s.start_line.0);
         assert_eq!(100, s.start_col.0);
         assert_eq!(10, s.end_line.0);
-        assert_eq!(100, s.end_col.0);
+        assert_eq!(101, s.end_col.0);
         assert!(s.is_one_char())
     }
 
@@ -98,32 +110,32 @@ mod test {
         s.incr_col();
         s.incr_col();
         assert!(s.is_one_line());
-        assert_eq!(s.start_line.0, 10);
-        assert_eq!(s.start_col.0, 100);
-        assert_eq!(s.end_line.0, 10);
-        assert_eq!(s.end_col.0, 102);
+        assert_eq!(10, s.start_line.0);
+        assert_eq!(100, s.start_col.0);
+        assert_eq!(10, s.end_line.0);
+        assert_eq!(103, s.end_col.0);
 
         s.incr_line();
         assert!(s.is_multi_line());
-        assert_eq!(s.start_line.0, 10);
-        assert_eq!(s.start_col.0, 100);
-        assert_eq!(s.end_line.0, 11);
-        assert_eq!(s.end_col.0, 0);
+        assert_eq!(10, s.start_line.0);
+        assert_eq!(100, s.start_col.0);
+        assert_eq!(11, s.end_line.0);
+        assert_eq!(0, s.end_col.0);
 
         s.incr_col();
         s.incr_col();
         assert!(s.is_multi_line());
-        assert_eq!(s.start_line.0, 10);
-        assert_eq!(s.start_col.0, 100);
-        assert_eq!(s.end_line.0, 11);
-        assert_eq!(s.end_col.0, 2);
+        assert_eq!(10, s.start_line.0);
+        assert_eq!(100, s.start_col.0);
+        assert_eq!(11, s.end_line.0);
+        assert_eq!(2, s.end_col.0);
 
         s.incr_line();
         assert!(s.is_multi_line());
-        assert_eq!(s.start_line.0, 10);
-        assert_eq!(s.start_col.0, 100);
-        assert_eq!(s.end_line.0, 12);
-        assert_eq!(s.end_col.0, 0);
+        assert_eq!(10, s.start_line.0);
+        assert_eq!(100, s.start_col.0);
+        assert_eq!(12, s.end_line.0);
+        assert_eq!(0, s.end_col.0);
     }
 
     #[test]
@@ -132,9 +144,27 @@ mod test {
 
         s.incr_line();
         assert!(s.is_multi_line());
-        assert_eq!(s.start_line.0, 10);
-        assert_eq!(s.start_col.0, 100);
-        assert_eq!(s.end_line.0, 11);
-        assert_eq!(s.end_col.0, 0);
+        assert_eq!(10, s.start_line.0);
+        assert_eq!(100, s.start_col.0);
+        assert_eq!(11, s.end_line.0);
+        assert_eq!(0, s.end_col.0);
+    }
+
+    #[test]
+    fn test_complete_one_char() {
+        let mut s = Span::new(Line(10), Column(100));
+        let s1 = s.complete();
+
+        assert!(s1.is_one_char());
+        assert_eq!(10, s1.start_line.0);
+        assert_eq!(100, s1.start_col.0);
+        assert_eq!(10, s1.end_line.0);
+        assert_eq!(101, s1.end_col.0);
+
+        assert!(s.is_one_char());
+        assert_eq!(10, s.start_line.0);
+        assert_eq!(101, s.start_col.0);
+        assert_eq!(10, s.end_line.0);
+        assert_eq!(102, s.end_col.0);
     }
 }
