@@ -1,8 +1,8 @@
-use std::fmt::Debug;
+use std::fmt::{Debug, Display};
 use std::string::String;
 
 /// Represents the lexemes supported by the language.
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub enum Lexeme {
     //
     // Single-char lexemes
@@ -52,7 +52,7 @@ pub enum Lexeme {
     // Literals lexemes
     //
     /// Identity
-    Identity(String),
+    Identifier(String),
     /// String
     String(String),
     /// Number
@@ -129,7 +129,7 @@ impl Debug for Lexeme {
             GreaterEqual => write!(f, "GREATER_EQUAL"),
             Less => write!(f, "LESS"),
             LessEqual => write!(f, "LESS_EQUAL"),
-            Identity(i) => write!(f, "IDENTITY({})", i),
+            Identifier(i) => write!(f, "IDENTITY({})", i),
             String(string) => write!(f, "STRING({}", string),
             Number(number) => write!(f, "NUMBER({})", number),
             Comment(comment) => write!(f, "COMMENT({})", comment),
@@ -152,6 +152,55 @@ impl Debug for Lexeme {
             Whitespace(ws) => write!(f, "WHITESPACE({})", ws),
             NewLine => write!(f, "NEW_LINE"),
             Eof => write!(f, "EOF"),
+        }
+    }
+}
+
+impl Display for Lexeme {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            LeftParen => write!(f, "("),
+            RightParen => write!(f, ")"),
+            LeftBrace => write!(f, "{{"),
+            RightBrace => write!(f, "}}"),
+            Comma => write!(f, ","),
+            Dot => write!(f, "."),
+            Minus => write!(f, "-"),
+            Plus => write!(f, "+"),
+            Semicolon => write!(f, ";"),
+            Slash => write!(f, "/"),
+            Star => write!(f, "*"),
+            Bang => write!(f, "!"),
+            BangEqual => write!(f, "!="),
+            Equal => write!(f, "="),
+            EqualEqual => write!(f, "=="),
+            Greater => write!(f, ">"),
+            GreaterEqual => write!(f, ">="),
+            Less => write!(f, "<"),
+            LessEqual => write!(f, "<="),
+            Identifier(i) => write!(f, "id({})", i),
+            String(string) => write!(f, "str({}", string),
+            Number(number) => write!(f, "num({})", number),
+            Comment(comment) => write!(f, "cmt({})", comment),
+            And => write!(f, "and"),
+            Class => write!(f, "class"),
+            Else => write!(f, "else"),
+            False => write!(f, "false"),
+            Fun => write!(f, "fun"),
+            For => write!(f, "for"),
+            If => write!(f, "if"),
+            Nil => write!(f, "nil"),
+            Or => write!(f, "or"),
+            Print => write!(f, "print"),
+            Return => write!(f, "return"),
+            Super => write!(f, "super"),
+            This => write!(f, "this"),
+            True => write!(f, "true"),
+            Var => write!(f, "var"),
+            While => write!(f, "while"),
+            Whitespace(ws) => write!(f, "ws({})", ws),
+            NewLine => write!(f, "nl"),
+            Eof => write!(f, "eof"),
         }
     }
 }

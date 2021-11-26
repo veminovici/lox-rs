@@ -5,6 +5,8 @@
 
 mod lexeme;
 mod span;
+mod token;
 
 pub use crate::lexeme::*;
 pub use crate::span::*;
+pub use crate::token::*;

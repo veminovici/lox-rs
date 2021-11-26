@@ -1,15 +1,15 @@
 use std::fmt::Debug;
 
 /// The line in the source stream
-#[derive(Clone, Copy)]
-pub struct Line(usize);
+#[derive(Clone, Copy, PartialEq)]
+pub struct Line(pub usize);
 
 /// The column in the source stream
-#[derive(Clone, Copy)]
-pub struct Column(usize);
+#[derive(Clone, Copy, PartialEq)]
+pub struct Column(pub usize);
 
 /// The position in the stream
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub struct Span {
     start_line: Line,
     start_col: Column,
@@ -34,10 +34,21 @@ impl Span {
         self.start_line.0 == self.end_line.0
     }
 
+    /// Returns true if the span is on the same line and has n characters.
+    pub fn is_n_chars(&self, n: usize) -> bool {
+        self.is_one_line() && self.end_col.0 - self.start_col.0 == n
+    }
+
+    /// Returns true if the span is a two-chars one.
+    #[inline]
+    pub fn is_two_chars(&self) -> bool {
+        self.is_n_chars(2)
+    }
+
     /// Returns true if the span is one-char one.
     #[inline]
     pub fn is_one_char(&self) -> bool {
-        self.is_one_line() && self.start_col.0 + 1 == self.end_col.0
+        self.is_n_chars(1)
     }
 
     /// Returns true if the span is a multi-line one.
@@ -46,9 +57,16 @@ impl Span {
         !self.is_one_line()
     }
 
+    /// Increments the coumn of a span
+    #[inline]
+    pub fn incr_col_n(&mut self, n: usize) {
+        self.end_col = Column(self.end_col.0 + n);
+    }
+
     /// Increments the column of a span
+    #[inline]
     pub fn incr_col(&mut self) {
-        self.end_col = Column(self.end_col.0 + 1);
+        self.incr_col_n(1)
     }
 
     /// Increment the line of a span
@@ -90,7 +108,7 @@ impl Debug for Span {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::*;
 
     #[test]
