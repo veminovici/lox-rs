@@ -17,6 +17,17 @@ pub struct Span {
     end_col: Column,
 }
 
+impl Default for Span {
+    fn default() -> Self {
+        Self {
+            start_line: Line(1),
+            start_col: Column(0),
+            end_line: Line(1),
+            end_col: Column(1),
+        }
+    }
+}
+
 impl Span {
     /// Creates a new one-char span
     pub fn new(l: Line, c: Column) -> Self {
