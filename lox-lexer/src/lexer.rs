@@ -1,40 +1,8 @@
 use std::iter::Peekable;
 use std::str::{Chars, FromStr};
 
+use crate::chars::*;
 use crate::{Lexeme, Span, Token};
-
-const CHAR_NEWLINE: char = '\n';
-
-const CHAR_LEFT_PAREN: char = '(';
-const CHAR_RIGHT_PAREN: char = ')';
-const CHAR_LEFT_BRACE: char = '{';
-const CHAR_RIGHT_BRACE: char = '}';
-const CHAR_COMMA: char = ',';
-const CHAR_DOT: char = '.';
-const CHAR_PLUS: char = '+';
-const CHAR_MINUS: char = '-';
-const CHAR_SEMICOLON: char = ';';
-const CHAR_STAR: char = '*';
-const CHAR_BANG: char = '!';
-const CHAR_EQUAL: char = '=';
-const CHAR_GREATER: char = '>';
-const CHAR_LESS: char = '<';
-const CHAR_SLASH: char = '/';
-
-const CHAR_WHITESPACE: char = ' ';
-const CHAR_CARRIAGE_RETURN: char = '\r';
-const CHAR_TAB: char = '\t';
-
-const CHAR_DOUBLE_QUOTE: char = '"';
-
-const CHAR_0: char = '0';
-const CHAR_9: char = '9';
-
-const CHAR_LOWERCASE_A: char = 'a';
-const CHAR_LOWERCASE_Z: char = 'z';
-const CHAR_UPPERCASE_A: char = 'A';
-const CHAR_UPPERCASE_Z: char = 'Z';
-const CHAR_UNDERSCORE: char = '_';
 
 static KEYWORDS: &[(&str, Lexeme)] = &[
     ("and", Lexeme::And),
@@ -93,28 +61,6 @@ impl<'a> Context<'a> {
         }
     }
 
-    #[inline]
-    fn is_whitespace(c: char) -> bool {
-        c == CHAR_WHITESPACE || c == CHAR_TAB || c == CHAR_CARRIAGE_RETURN
-    }
-
-    #[inline]
-    fn is_digit(c: char) -> bool {
-        c >= CHAR_0 && c <= CHAR_9
-    }
-
-    #[inline]
-    fn is_alpha(c: char) -> bool {
-        c >= CHAR_LOWERCASE_A && c <= CHAR_LOWERCASE_Z
-            || c >= CHAR_UPPERCASE_A && c <= CHAR_UPPERCASE_Z
-            || c == CHAR_UNDERSCORE
-    }
-
-    #[inline]
-    fn is_alphanum(c: char) -> bool {
-        Context::is_alpha(c) || Context::is_digit(c)
-    }
-
     /// Consumes a character from the source stream.
     fn read_char(&mut self) -> Option<char> {
         if let Some(c) = self.source.next() {
@@ -161,7 +107,7 @@ impl<'a> Context<'a> {
         let mut buffer = format!("{}", first_ws);
 
         while let Some(maybe_ws) = self.source.peek().copied() {
-            if Context::is_whitespace(maybe_ws) {
+            if is_whitespace(maybe_ws) {
                 buffer.push(maybe_ws);
                 self.read_char();
             } else {
@@ -204,7 +150,7 @@ impl<'a> Context<'a> {
 
         // Read leading digits
         while let Some(maybe_digit) = self.source.peek().copied() {
-            if Context::is_digit(maybe_digit) {
+            if is_digit(maybe_digit) {
                 buffer.push(maybe_digit);
                 self.read_char();
             } else {
@@ -221,7 +167,7 @@ impl<'a> Context<'a> {
                 let mut read_additional_digits = false;
 
                 while let Some(maybe_digit) = self.source.peek().copied() {
-                    if Context::is_digit(maybe_digit) {
+                    if is_digit(maybe_digit) {
                         buffer.push(maybe_digit);
                         self.read_char();
                         read_additional_digits = true;
@@ -257,7 +203,7 @@ impl<'a> Context<'a> {
         let mut buffer = format!("{}", first_alpha);
 
         while let Some(maybe_alphanumeric) = self.source.peek() {
-            if Context::is_alphanum(*maybe_alphanumeric) {
+            if is_alphanum(*maybe_alphanumeric) {
                 buffer.push(*maybe_alphanumeric);
                 self.read_char();
             } else {
@@ -288,9 +234,9 @@ impl<'a> Context<'a> {
             CHAR_SLASH => self.mk_slash_or_comment(),
             CHAR_NEWLINE => self.mk_newline(),
             CHAR_DOUBLE_QUOTE => self.mk_string(),
-            ws if Context::is_whitespace(ws) => self.mk_whitespace(ws),
-            d if Context::is_digit(d) => self.mk_number(d),
-            a if Context::is_alpha(a) => self.mk_identifier_or_keyword(a),
+            ws if is_whitespace(ws) => self.mk_whitespace(ws),
+            d if is_digit(d) => self.mk_number(d),
+            a if is_alpha(a) => self.mk_identifier_or_keyword(a),
             unexpected => panic!("Unknown char {}", unexpected),
         }
     }
@@ -1218,7 +1164,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_digit(c));
+        assert!(is_digit(c));
 
         let tkn = ctx.mk_number(c).unwrap();
 
@@ -1238,7 +1184,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1258,7 +1204,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1278,7 +1224,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1298,7 +1244,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1318,7 +1264,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1338,7 +1284,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1358,7 +1304,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1378,7 +1324,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1398,7 +1344,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1418,7 +1364,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1438,7 +1384,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1458,7 +1404,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1478,7 +1424,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1498,7 +1444,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1518,7 +1464,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1538,7 +1484,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 
@@ -1558,7 +1504,7 @@ mod tests {
         read_and_ignore(&mut ctx);
 
         let c = ctx.read_char().unwrap();
-        assert!(Context::is_alpha(c));
+        assert!(is_alpha(c));
 
         let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
 

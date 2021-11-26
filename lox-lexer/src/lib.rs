@@ -1,8 +1,9 @@
-//! A crate for nyxx lexer
+//! A crate for a lexer
 //!
 #![deny(missing_docs)]
 #![deny(unreachable_code)]
 
+mod chars;
 mod lexeme;
 mod lexer;
 mod span;
