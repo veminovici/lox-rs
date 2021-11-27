@@ -13,11 +13,38 @@ A collection of rust crates for an interpreter.
 
 ## Lexer
 The project contains the **lox-lexer** crate. The crate implements the **Lexer** structure which allows the caller to parse a string source and get back an iterator which gives you access to a collection of **tokens**. 
-For more details regarding how the **lexer** can be used, please check the [readme](https://github.com/veminovici/lox-rs/blob/main/lox-lexer/README.md) file.
+
+### Span
+The **Span** structure encapsulates information about the location of a lexeme in the source stream such *start* line and column and *end* line and column.
+
+### Lexeme & Token
+The **Lexeme** is an enumeration type which represents the list of supported *lexemes* in the language. The **Token** structure just pairs together a *Lexeme* with its location, the *span*.
+
+```rust
+pub enum Lexeme {
+    LeftParen, RightParen, LeftBrace, RightBrace, Comma, Dot, Minus, Plus, Semicolon, Slash, Star,
+    Bang, BangEqual, Equal, EqualEqual, Greater, GreaterEqual, Less, LessEqual,
+    Identifier(String), String(String), Number(f64), Comment(String), Whitepsace(String),
+    And, Class, Else, False, Fun, For, If, Nil, Or,
+    Print, Return, Super, This, True, Var, While, NewLine, Eof,
+}
+
+pub struct Token {
+    lexeme: Lexeme,
+    span: Span,
+}
+```
+
+### Lexer
+The **Lexer** contains the scanning logic. The manin structure is **Context**, which keeps a scanning context: the *source string*, the current *span*. 
+Couple of helper structures, **Lexer** and **LexerIter** are provided, so the list of tokens is obtain as a simple *Iterator*.
 
 ```rust
 let lxr: LexerIter = "var x = \"test\"".into();
 lxr.for_each(|tkn| println!("{:?}", tkn));
+
+// VAR [1:0-3], WHITESPACE( ) [1:3-4], IDENTITY(language) [1:4-12], EQUAL [1:12-13], 
+// NEW_LINE [1:13-2:0], STRING(lox [2:0-5], SEMICOLON [2:5-6], EOF [2:6-6]
 ```
 
 </br>
