@@ -636,7 +636,7 @@ impl Lexer {
 
     /// Returns an iterator which containts the
     /// tokens resulted from parsing the source string.
-    pub fn iter(source: &str) -> LexerIter {
+    fn iter(source: &str) -> LexerIter {
         LexerIter {
             ctx: Context::new(source),
         }
@@ -1517,9 +1517,15 @@ mod tests {
     }
 
     #[test]
-    fn test_iter() {
+    fn test_intoiter() {
         let source = "var x = \"test\"";
         let lxr = Lexer::with_source(source);
         lxr.into_iter().for_each(|tkn| println!("{:?}", tkn));
+    }
+
+    #[test]
+    fn test_into() {
+        let lxr: LexerIter = "var x = \"test\"".into();
+        lxr.for_each(|tkn| println!("{:?}", tkn));
     }
 }

@@ -15,6 +15,11 @@ A collection of rust crates for an interpreter.
 The project contains the **lox-lexer** crate. The crate implements the **Lexer** structure which allows the caller to parse a string source and get back an iterator which gives you access to a collection of **tokens**. 
 For more details regarding how the **lexer** can be used, please check the [readme](https://github.com/veminovici/lox-rs/blob/main/lox-lexer/README.md) file.
 
+```rust
+let lxr: LexerIter = "var x = \"test\"".into();
+lxr.for_each(|tkn| println!("{:?}", tkn));
+```
+
 </br>
 
 ## Project Status
