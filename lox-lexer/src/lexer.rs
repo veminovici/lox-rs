@@ -699,7 +699,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_LEFT_PAREN, c);
 
-        let tkn = ctx.mk_left_parenthesis().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_char());
@@ -719,7 +719,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_RIGHT_PAREN, c);
 
-        let tkn = ctx.mk_right_parenthesis().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_char());
@@ -739,7 +739,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_LEFT_BRACE, c);
 
-        let tkn = ctx.mk_left_brace().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_char());
@@ -759,7 +759,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_RIGHT_BRACE, c);
 
-        let tkn = ctx.mk_right_brace().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_char());
@@ -779,7 +779,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_COMMA, c);
 
-        let tkn = ctx.mk_comma().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_char());
@@ -799,7 +799,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_DOT, c);
 
-        let tkn = ctx.mk_dot().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_char());
@@ -819,7 +819,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_PLUS, c);
 
-        let tkn = ctx.mk_plus().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_char());
@@ -839,7 +839,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_MINUS, c);
 
-        let tkn = ctx.mk_minus().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_char());
@@ -859,7 +859,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_SEMICOLON, c);
 
-        let tkn = ctx.mk_semicolon().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_char());
@@ -879,7 +879,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_STAR, c);
 
-        let tkn = ctx.mk_star().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_char());
@@ -899,7 +899,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_BANG, c);
 
-        let tkn = ctx.mk_bang_or_bang_equal().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_char());
@@ -919,7 +919,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_BANG, c);
 
-        let tkn = ctx.mk_bang_or_bang_equal().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_two_chars());
@@ -939,7 +939,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_EQUAL, c);
 
-        let tkn = ctx.mk_equal_or_equal_equal().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_char());
@@ -959,7 +959,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_EQUAL, c);
 
-        let tkn = ctx.mk_equal_or_equal_equal().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_two_chars());
@@ -979,7 +979,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_GREATER, c);
 
-        let tkn = ctx.mk_greater_or_greater_equal().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_char());
@@ -999,7 +999,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_GREATER, c);
 
-        let tkn = ctx.mk_greater_or_greater_equal().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert_eq!(Lexeme::GreaterEqual, tkn.lexeme);
@@ -1019,7 +1019,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_LESS, c);
 
-        let tkn = ctx.mk_less_or_less_equal().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_char());
@@ -1039,7 +1039,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_LESS, c);
 
-        let tkn = ctx.mk_less_or_less_equal().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert_eq!(Lexeme::LessEqual, tkn.lexeme);
@@ -1059,7 +1059,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_SLASH, c);
 
-        let tkn = ctx.mk_slash_or_comment().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_char());
@@ -1079,7 +1079,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_SLASH, c);
 
-        let tkn = ctx.mk_slash_or_comment().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         let cmnt = "_".to_string();
@@ -1100,7 +1100,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_NEWLINE, c);
 
-        let tkn = ctx.mk_newline().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_multi_line());
@@ -1120,7 +1120,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_WHITESPACE, c);
 
-        let tkn = ctx.mk_whitespace(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1146,7 +1146,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert_eq!(CHAR_DOUBLE_QUOTE, c);
 
-        let tkn = ctx.mk_string().unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1166,7 +1166,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_digit(c));
 
-        let tkn = ctx.mk_number(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1186,7 +1186,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1206,7 +1206,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1226,7 +1226,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1246,7 +1246,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1266,7 +1266,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1286,7 +1286,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1306,7 +1306,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1326,7 +1326,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1346,7 +1346,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1366,7 +1366,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1386,7 +1386,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1406,7 +1406,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1426,7 +1426,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1446,7 +1446,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1466,7 +1466,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1486,7 +1486,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
@@ -1506,7 +1506,7 @@ mod tests {
         let c = ctx.read_char().unwrap();
         assert!(is_alpha(c));
 
-        let tkn = ctx.mk_identifier_or_keyword(c).unwrap();
+        let tkn = ctx.read_token_with_char(c).unwrap();
 
         assert_eq!(1, tkn.span.start_col.0);
         assert!(tkn.span.is_one_line());
